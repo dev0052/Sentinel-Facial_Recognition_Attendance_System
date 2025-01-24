@@ -1,8 +1,8 @@
-# Cloud-Based Biometric Attendance System
+# Facial-Recognition_Attendance-System
 
 
 ## Description
-The **Cloud-Based Biometric Attendance System** is a robust application for managing attendance using face recognition. It leverages machine learning, computer vision, and cloud storage to ensure secure, efficient, and real-time attendance tracking. This system is ideal for educational institutions, offices, or any organization that requires seamless attendance monitoring.
+The **Facial-Recognition_Attendance-System** is a robust application for managing attendance using face recognition. It leverages machine learning, computer vision, and cloud storage to ensure secure, efficient, and real-time attendance tracking. This system is ideal for educational institutions, offices, or any organization that requires seamless attendance monitoring.
 
 ---
 
@@ -28,8 +28,8 @@ The **Cloud-Based Biometric Attendance System** is a robust application for mana
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/dev0052/Cloud-Based-Biometric-Attendance-System.git
-   cd Cloud-Based-Biometric-Attendance-System
+   git clone https://github.com/dev0052/Facial-Recognition_Attendance-System.git
+   cd Facial-Recognition_Attendance-System
    ```
 2. Set up a virtual environment:
    ```bash
@@ -59,7 +59,7 @@ The **Cloud-Based Biometric Attendance System** is a robust application for mana
 
 ## File Structure
 ```
-Cloud-Based-Biometric-Attendance-System/
+Facial-Recognition_Attendance-System/
 ├── main.py                 # Main application script
 ├── requirements.txt        # Project dependencies
 ├── TrainingImage/          # Captured images for training
