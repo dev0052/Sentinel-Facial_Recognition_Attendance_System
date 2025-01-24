@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mess
 import tkinter.simpledialog as tsd
-import cv2,os
+import cv2, os
 import csv
 import numpy as np
 from PIL import Image
@@ -14,16 +14,38 @@ import time
 ############################################# FUNCTIONS ################################################
 
 def assure_path_exists(path):
-    dir = os.path.dirname(path)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    """Ensure the provided directory exists, or create it."""
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+def save_attendance_to_excel(attendance, folder="Attendance"):
+    """Save the attendance data to an Excel file in the specified folder."""
+    # Ensure the attendance folder exists
+    assure_path_exists(folder)
+
+    # Get the current date for the filename
+    date = datetime.now().strftime('%Y-%m-%d')
+    file_path = os.path.join(folder, f"Attendance_{date}.xlsx")
+
+    # Check if the file already exists
+    if os.path.isfile(file_path):
+        # Load the existing data
+        df_existing = pd.read_excel(file_path)
+        df_new = pd.DataFrame(attendance, columns=['Id', 'Name', 'Date', 'Time'])
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+        df_combined.to_excel(file_path, index=False)
+    else:
+        # Create a new file
+        df = pd.DataFrame(attendance, columns=['Id', 'Name', 'Date', 'Time'])
+        df.to_excel(file_path, index=False)
+    print(f"Attendance saved to {file_path}")
 
 ##################################################################################
 
 def tick():
     time_string = time.strftime('%H:%M:%S')
     clock.config(text=time_string)
-    clock.after(200,tick)
+    clock.after(200, tick)
 
 ###################################################################################
 
@@ -51,18 +73,18 @@ def save_pass():
     else:
         master.destroy()
         new_pas = tsd.askstring('Old Password not found', 'Please enter a new password below', show='*')
-        if new_pas == None:
+        if new_pas is None:
             mess._show(title='No Password Entered', message='Password not set!! Please try again')
         else:
             tf = open("./TrainingImageLabel/psd.txt", "w")
             tf.write(new_pas)
             mess._show(title='Password Registered', message='New password was registered successfully!!')
             return
-    op = (old.get())
-    newp= (new.get())
-    nnewp = (nnew.get())
-    if (op == key):
-        if(newp == nnewp):
+    op = old.get()
+    newp = new.get()
+    nnewp = nnew.get()
+    if op == key:
+        if newp == nnewp:
             txf = open("./TrainingImageLabel/psd.txt", "w")
             txf.write(newp)
         else:
@@ -80,27 +102,27 @@ def change_pass():
     global master
     master = tk.Tk()
     master.geometry("400x160")
-    master.resizable(False,False)
+    master.resizable(False, False)
     master.title("Change Password")
     master.configure(background="white")
-    lbl4 = tk.Label(master,text='    Enter Old Password',bg='white',font=('times', 12, ' bold '))
-    lbl4.place(x=10,y=10)
+    lbl4 = tk.Label(master, text='    Enter Old Password', bg='white', font=('times', 12, ' bold '))
+    lbl4.place(x=10, y=10)
     global old
-    old=tk.Entry(master,width=25 ,fg="black",relief='solid',font=('times', 12, ' bold '),show='*')
-    old.place(x=180,y=10)
+    old = tk.Entry(master, width=25, fg="black", relief='solid', font=('times', 12, ' bold '), show='*')
+    old.place(x=180, y=10)
     lbl5 = tk.Label(master, text='   Enter New Password', bg='white', font=('times', 12, ' bold '))
     lbl5.place(x=10, y=45)
     global new
-    new = tk.Entry(master, width=25, fg="black",relief='solid', font=('times', 12, ' bold '),show='*')
+    new = tk.Entry(master, width=25, fg="black", relief='solid', font=('times', 12, ' bold '), show='*')
     new.place(x=180, y=45)
     lbl6 = tk.Label(master, text='Confirm New Password', bg='white', font=('times', 12, ' bold '))
     lbl6.place(x=10, y=80)
     global nnew
-    nnew = tk.Entry(master, width=25, fg="black", relief='solid',font=('times', 12, ' bold '),show='*')
+    nnew = tk.Entry(master, width=25, fg="black", relief='solid', font=('times', 12, ' bold '), show='*')
     nnew.place(x=180, y=80)
-    cancel=tk.Button(master,text="Cancel", command=master.destroy ,fg="black"  ,bg="red" ,height=1,width=25 , activebackground = "white" ,font=('times', 10, ' bold '))
+    cancel = tk.Button(master, text="Cancel", command=master.destroy, fg="black", bg="red", height=1, width=25, activebackground="white", font=('times', 10, ' bold '))
     cancel.place(x=200, y=120)
-    save1 = tk.Button(master, text="Save", command=save_pass, fg="black", bg="#3ece48", height = 1,width=25, activebackground="white", font=('times', 10, ' bold '))
+    save1 = tk.Button(master, text="Save", command=save_pass, fg="black", bg="#3ece48", height=1, width=25, activebackground="white", font=('times', 10, ' bold '))
     save1.place(x=10, y=120)
     master.mainloop()
 
@@ -114,7 +136,7 @@ def psw():
         key = tf.read()
     else:
         new_pas = tsd.askstring('Old Password not found', 'Please enter a new password below', show='*')
-        if new_pas == None:
+        if new_pas is None:
             mess._show(title='No Password Entered', message='Password not set!! Please try again')
         else:
             tf = open("./TrainingImageLabel/psd.txt", "w")
@@ -122,9 +144,9 @@ def psw():
             mess._show(title='Password Registered', message='New password was registered successfully!!')
             return
     password = tsd.askstring('Password', 'Enter Password', show='*')
-    if (password == key):
+    if password == key:
         TrainImages()
-    elif (password == None):
+    elif password is None:
         pass
     else:
         mess._show(title='Wrong Password', message='You have entered wrong password')
@@ -135,7 +157,6 @@ def clear():
     txt.delete(0, 'end')
     res = "1)Take Images  >>>  2)Save Profile"
     message1.configure(text=res)
-
 
 def clear2():
     txt2.delete(0, 'end')
@@ -164,14 +185,14 @@ def TakeImages():
             writer.writerow(columns)
             serial = 1
         csvFile1.close()
-    Id = (txt.get())
-    name = (txt2.get())
-    if ((name.isalpha()) or (' ' in name)):
+    Id = txt.get()
+    name = txt2.get()
+    if name.isalpha() or ' ' in name:
         cam = cv2.VideoCapture(0)
         harcascadePath = "haarcascade_frontalface_default.xml"
         detector = cv2.CascadeClassifier(harcascadePath)
         sampleNum = 0
-        while (True):
+        while True:
             ret, img = cam.read()
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             faces = detector.detectMultiScale(gray, 1.3, 5)
@@ -180,14 +201,14 @@ def TakeImages():
                 # incrementing sample number
                 sampleNum = sampleNum + 1
                 # saving the captured face in the dataset folder TrainingImage
-                cv2.imwrite("./TrainingImage/ " + name + "." + str(serial) + "." + Id + '.' + str(sampleNum) + ".jpg",
+                cv2.imwrite("./TrainingImage/" + name + "." + str(serial) + "." + Id + '.' + str(sampleNum) + ".jpg",
                             gray[y:y + h, x:x + w])
                 # display the frame
                 cv2.imshow('Taking Images', img)
-            # wait for 100 miliseconds
+            # wait for 100 milliseconds
             if cv2.waitKey(100) & 0xFF == ord('q'):
                 break
-            # break if the sample number is morethan 100
+            # break if the sample number is more than 100
             elif sampleNum > 100:
                 break
         cam.release()
@@ -200,7 +221,7 @@ def TakeImages():
         csvFile.close()
         message1.configure(text=res)
     else:
-        if (name.isalpha() == False):
+        if not name.isalpha():
             res = "Enter Correct name"
             message.configure(text=res)
 
@@ -209,7 +230,7 @@ def TakeImages():
 def TrainImages():
     check_haarcascadefile()
     assure_path_exists("TrainingImageLabel/")
-    recognizer = cv2.face.LBPHFaceRecognizer.create()
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
     harcascadePath = "haarcascade_frontalface_default.xml"
     detector = cv2.CascadeClassifier(harcascadePath)
     faces, ID = getImagesAndLabels("TrainingImage")
@@ -228,7 +249,7 @@ def TrainImages():
 def getImagesAndLabels(path):
     # get the path of all the files in the folder
     imagePaths = [os.path.join(path, f) for f in os.listdir(path)]
-    # create empth face list
+    # create empty face list
     faces = []
     # create empty ID list
     Ids = []
@@ -264,7 +285,7 @@ def TrackImages():
         mess._show(title='Data Missing', message='Please click on Save Profile to reset data!!')
         return
     harcascadePath = "haarcascade_frontalface_default.xml"
-    faceCascade = cv2.CascadeClassifier(harcascadePath);
+    faceCascade = cv2.CascadeClassifier(harcascadePath)
 
     cam = cv2.VideoCapture(0)
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -284,7 +305,7 @@ def TrackImages():
         for (x, y, w, h) in faces:
             cv2.rectangle(im, (x, y), (x + w, y + h), (225, 0, 0), 2)
             serial, conf = recognizer.predict(gray[y:y + h, x:x + w])
-            if (conf < 50):
+            if conf < 50:
                 ts = time.time()
                 date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')
                 timeStamp = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
@@ -301,28 +322,19 @@ def TrackImages():
                 bb = str(Id)
             cv2.putText(im, str(bb), (x, y + h), font, 1, (255, 255, 255), 2)
         cv2.imshow('Taking Attendance', im)
-        if (cv2.waitKey(1) == ord('q')):
+        if cv2.waitKey(1) == ord('q'):
             break
     ts = time.time()
     date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')
-    exists = os.path.isfile("Attendance/Attendance_" + date + ".csv")
-    if exists:
-        with open("Attendance/Attendance_" + date + ".csv", 'a+') as csvFile1:
-            writer = csv.writer(csvFile1)
-            writer.writerow(attendance)
-        csvFile1.close()
-    else:
-        with open("Attendance/Attendance_" + date + ".csv", 'a+') as csvFile1:
-            writer = csv.writer(csvFile1)
-            writer.writerow(col_names)
-            writer.writerow(attendance)
-        csvFile1.close()
+
+    save_attendance_to_excel([attendance])
+
     with open("Attendance/Attendance_" + date + ".csv", 'r') as csvFile1:
         reader1 = csv.reader(csvFile1)
         for lines in reader1:
             i = i + 1
-            if (i > 1):
-                if (i % 2 != 0):
+            if i > 1:
+                if i % 2 != 0:
                     iidd = str(lines[0]) + '   '
                     tv.insert('', 0, text=iidd, values=(str(lines[2]), str(lines[4]), str(lines[6])))
     csvFile1.close()
@@ -330,27 +342,27 @@ def TrackImages():
     cv2.destroyAllWindows()
 
 ######################################## USED STUFFS ############################################
-    
+
 global key
 key = ''
 
 ts = time.time()
 date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')
-day,month,year=date.split("-")
+day, month, year = date.split("-")
 
-mont={'01':'January',
-      '02':'February',
-      '03':'March',
-      '04':'April',
-      '05':'May',
-      '06':'June',
-      '07':'July',
-      '08':'August',
-      '09':'September',
-      '10':'October',
-      '11':'November',
-      '12':'December'
-      }
+mont = {'01': 'January',
+        '02': 'February',
+        '03': 'March',
+        '04': 'April',
+        '05': 'May',
+        '06': 'June',
+        '07': 'July',
+        '08': 'August',
+        '09': 'September',
+        '10': 'October',
+        '11': 'November',
+        '12': 'December'
+        }
 
 ######################################## GUI FRONT-END ###########################################
 
