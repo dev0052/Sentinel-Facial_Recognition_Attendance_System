@@ -19,6 +19,7 @@ def save_attendance_to_excel(attendance, folder="Attendance"):
     date = datetime.now().strftime('%Y-%m-%d')
     file_path = os.path.join(folder, f"Attendance_{date}.xlsx")
 
+    # Create or update the attendance file
     df_new = pd.DataFrame(attendance, columns=['Id', 'Name', 'Date', 'Time'])
     if os.path.isfile(file_path):
         df_existing = pd.read_excel(file_path)
@@ -27,22 +28,39 @@ def save_attendance_to_excel(attendance, folder="Attendance"):
     else:
         df_new.to_excel(file_path, index=False)
 
+def get_registered_users_count():
+    if os.path.exists("StudentDetails/StudentDetails.csv"):
+        with open("StudentDetails/StudentDetails.csv", 'r') as file:
+            reader = csv.reader(file)
+            rows = list(reader)
+            return len(rows) - 1  # Subtract 1 for the header
+    else:
+        return 0
+
+def update_registered_users_label():
+    count = get_registered_users_count()
+    lbl_registered_users.config(text=f"Registered Users: {count}")
+
+
 # ------------------------- Password Functions ------------------------- #
 PASSWORD_FILE = "TrainingImageLabel/psd.txt"
 EMAIL = "realdev0052@gmail.com"
 
 def save_pass(new_pass):
+    """Save the password to a file."""
     assure_path_exists("TrainingImageLabel")
     with open(PASSWORD_FILE, 'w') as f:
         f.write(new_pass)
 
 def load_pass():
+    """Load the password from a file."""
     if os.path.exists(PASSWORD_FILE):
         with open(PASSWORD_FILE, 'r') as f:
             return f.read()
     return None
 
 def prompt_password(is_first_time):
+    """Prompt the user to set or enter the password."""
     saved_pass = load_pass()
 
     if is_first_time or not saved_pass:
@@ -60,7 +78,7 @@ def prompt_password(is_first_time):
         else:
             forgot_choice = mess.askyesno('Error', 'Incorrect password! Forgot password?')
             if forgot_choice:
-                email_entered = tsd.askstring('Forgot Password', f'Enter email ({EMAIL}) to reset password:')
+                email_entered = tsd.askstring('Forgot Password', f'Enter the email of admin to reset password:')
                 if email_entered == EMAIL:
                     new_pass = tsd.askstring('Reset Password', 'Set a new password:', show='*')
                     if new_pass:
@@ -71,6 +89,7 @@ def prompt_password(is_first_time):
     return False
 
 def change_pass():
+    """Allow the user to change their password."""
     saved_pass = load_pass()
     if not saved_pass:
         mess.showerror('Error', 'No password set! Please set a password first.')
@@ -113,14 +132,16 @@ def change_pass():
 
 # -------------------------- Face Recognition -------------------------- #
 def check_haarcascadefile():
+    """Ensure that the Haarcascade file is present."""
     if not os.path.isfile("haarcascade_frontalface_default.xml"):
         mess.showerror('Error', 'Haarcascade file missing!')
         exit()
 
 def take_images():
+    """Capture and save face images for training."""
     Id = txt_id.get()
     name = txt_name.get()
-    
+
     if not (Id and name.isalpha()):
         mess.showerror('Error', 'Invalid ID or Name!')
         return
@@ -130,13 +151,6 @@ def take_images():
 
     detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     cam = cv2.VideoCapture(0)
-
-    if not Id:
-        mess.showerror('Error', 'ID cannot be empty!')
-        return
-    elif not all(part.isalpha() for part in name.split()):
-        mess.showerror('Error', 'Name must only contain alphabets (letters) and spaces!')
-        return
 
     sample_num = 0
 
@@ -155,7 +169,7 @@ def take_images():
             cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
         cv2.imshow('Capturing Images', img)
-        
+
         if cv2.waitKey(1) & 0xFF == ord('q') or sample_num >= 100:
             break
 
@@ -168,13 +182,16 @@ def take_images():
             writer.writerow([Id, name])
 
         mess.showinfo('Info', f"Images saved for ID: {Id}")
+        update_registered_users_label()
+
     else:
         mess.showerror('Error', 'No images were captured!')
 
 def train_images():
+    """Train the model using captured face images."""
     check_haarcascadefile()
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    
+
     faces, ids = get_images_and_labels("TrainingImage/")
     recognizer.train(faces, np.array(ids))
     assure_path_exists("TrainingImageLabel/")
@@ -183,6 +200,7 @@ def train_images():
     mess.showinfo('Info', 'Training complete!')
 
 def get_images_and_labels(path):
+    """Extract face data and corresponding labels from images."""
     image_paths = [os.path.join(path, f) for f in os.listdir(path)]
     faces, ids = [], []
 
@@ -194,9 +212,10 @@ def get_images_and_labels(path):
     return faces, ids
 
 def track_images():
+    """Recognize faces in real-time and record attendance."""
     check_haarcascadefile()
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    
+
     if not os.path.isfile("TrainingImageLabel/Trainner.yml"):
         mess.showerror('Error', 'No training data found! Please train the images first.')
         return
@@ -226,6 +245,7 @@ def track_images():
             id_, conf = recognizer.predict(gray[y:y+h, x:x+w])
 
             if conf < 50:
+                name = "Unknown"  # Default value if no match is found
                 with open("StudentDetails/StudentDetails.csv", 'r') as f:
                     reader = csv.reader(f)
                     next(reader)  # Skip header
@@ -271,6 +291,10 @@ window.configure(bg='#2c3e50')
 header = tk.Label(window, text="Face Recognition Attendance System", bg='#2c3e50', fg="white", font=('Helvetica', 16, 'bold'))
 header.pack(pady=20)
 
+lbl_registered_users = tk.Label(window, text="Registered Users: 0", bg='#2c3e50', fg="white", font=('Helvetica', 12))
+lbl_registered_users.pack(pady=10)
+
+
 # Help Button
 def show_help():
     mess.showinfo('Help', f'For assistance, contact: {EMAIL}')
@@ -310,5 +334,7 @@ btn_change_pass.place(x=600, y=450)
 
 btn_exit = tk.Button(window, text="Exit", command=window.destroy)
 btn_exit.pack(pady=10)
+
+update_registered_users_label()
 
 window.mainloop()
