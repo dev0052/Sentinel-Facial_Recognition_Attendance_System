@@ -6,6 +6,11 @@ import pandas as pd
 from PIL import Image
 from datetime import datetime
 import time
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 
 # ----------------------- Helper Functions ----------------------- #
 def assure_path_exists(path):
@@ -28,6 +33,9 @@ def save_attendance_to_excel(attendance, folder="Attendance"):
     else:
         df_new.to_excel(file_path, index=False)
 
+    # Send the attendance file via email
+    send_attendance_email(file_path)
+
 def get_registered_users_count():
     if os.path.exists("StudentDetails/StudentDetails.csv"):
         with open("StudentDetails/StudentDetails.csv", 'r') as file:
@@ -41,6 +49,48 @@ def update_registered_users_label():
     count = get_registered_users_count()
     lbl_registered_users.config(text=f"Registered Users: {count}")
 
+# ------------------------- Email Configuration ------------------------- #
+
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_SENDER = "ubuntuvm22.alerts@gmail.com"  # Sender's email
+EMAIL_PASSWORD = "gqks xfjb bszy tvms"  # App password for the sender's email
+EMAIL_RECEIVER = "dev.sharma2021@vitbhopal.ac.in"  # Receiver's email
+
+def send_attendance_email(file_path):
+    """
+    Sends the attendance Excel file via email.
+    """
+    subject = "Attendance Report"
+    body = "Please find the attached attendance file."
+
+    # Create the email message
+    message = MIMEMultipart()
+    message["From"] = EMAIL_SENDER
+    message["To"] = EMAIL_RECEIVER
+    message["Subject"] = subject
+    message.attach(MIMEText(body, "plain"))
+
+    # Attach the Excel file
+    with open(file_path, "rb") as attachment:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+    encoders.encode_base64(part)
+    part.add_header(
+        "Content-Disposition",
+        f"attachment; filename={os.path.basename(file_path)}",
+    )
+    message.attach(part)
+
+    # Send the email
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, message.as_string())
+        print("Attendance email sent successfully.")
+    except Exception as e:
+        print(f"Failed to send attendance email: {e}")
 
 # ------------------------- Password Functions ------------------------- #
 PASSWORD_FILE = "TrainingImageLabel/psd.txt"
@@ -246,13 +296,21 @@ def track_images():
 
             if conf < 50:
                 name = "Unknown"  # Default value if no match is found
-                with open("StudentDetails/StudentDetails.csv", 'r') as f:
-                    reader = csv.reader(f)
-                    next(reader)  # Skip header
-                    for row in reader:
-                        if row and int(row[0]) == id_:  # Check if row is not empty
-                            name = row[1]
-                            break
+
+                # Match ID with StudentDetails.csv
+                try:
+                    with open("StudentDetails/StudentDetails.csv", 'r') as f:
+                        reader = csv.reader(f)
+                        next(reader)  # Skip header
+                        for row in reader:
+                            if row and str(row[0]).strip() == str(id_):  # Ensure proper string comparison
+                                name = row[1].strip()
+                                break
+                except Exception as e:
+                    mess.showerror('Error', f"Error reading StudentDetails.csv: {e}")
+                    cam.release()
+                    cv2.destroyAllWindows()
+                    return
 
                 date = datetime.now().strftime('%Y-%m-%d')
                 time_ = datetime.now().strftime('%H:%M:%S')
@@ -261,11 +319,10 @@ def track_images():
                     attendance.append([id_, name, date, time_])
 
                 cv2.putText(img, f"{name} - {id_}", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-                cam.release()
-                cv2.destroyAllWindows()
-
                 save_attendance_to_excel(attendance)
                 mess.showinfo('Info', 'Attendance saved successfully!')
+                cam.release()
+                cv2.destroyAllWindows()
                 return
             else:
                 cv2.putText(img, "Unknown", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
