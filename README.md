@@ -1,46 +1,54 @@
-# Facial-Recognition_Attendance-System
 
+# Sentinel Facial Recognition Attendance System
 
-## Description
-The **Facial-Recognition_Attendance-System** is a robust application for managing attendance using face recognition. It leverages machine learning, computer vision, and cloud storage to ensure secure, efficient, and real-time attendance tracking. This system is ideal for educational institutions, offices, or any organization that requires seamless attendance monitoring.
+Sentinel is a robust and efficient facial recognition-based attendance system. It leverages advanced image processing techniques and a graphical user interface (GUI) to automate attendance tracking, ensuring accuracy and ease of use for educational institutions, offices, or any organization requiring a secure and reliable attendance solution.
 
 ---
 
 ## Features
-- **Face Recognition**: Uses advanced facial recognition to mark attendance.
-- **Cloud-Based Storage**: Stores attendance records securely in the cloud for accessibility and reliability.
-- **Admin Panel**: Features password-protected admin access for managing data.
-- **Real-Time Monitoring**: Tracks attendance in real-time with a user-friendly GUI.
-- **Excel Export**: Automatically saves attendance data in Excel format for easy reporting.
-- **User Count Display**: Shows the total number of registered users in the system.
 
+- **Face Detection and Recognition**: Uses OpenCV and Haarcascade to detect and recognize faces in real time.
+- **Automated Attendance Logging**: Saves attendance data to an Excel file with timestamps.
+- **Password Protection**: Restricts access to sensitive features through a secure password mechanism.
+- **Email Notifications**: Automatically sends the attendance Excel file via email.
+- **Graphical User Interface**: Intuitive GUI for managing attendance, training data, and settings.
+- **Multi-user Support**: Handles multiple registered users seamlessly.
 
+---
+
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
 ## Installation
 
-### Prerequisites
-- Python 3.8+
-- A webcam or external camera
-- Internet connection for cloud integration (if applicable)
+Follow these steps to set up the project:
 
-### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/dev0052/Facial-Recognition_Attendance-System.git
-   cd Facial-Recognition_Attendance-System
+   git clone https://github.com/dev0052/Sentinel-Facial_Recognition_Attendance_System.git
    ```
-2. Set up a virtual environment:
+
+2. Navigate to the project directory:
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # For Windows: .venv\Scripts\activate
+   cd Sentinel-Facial_Recognition_Attendance_System
    ```
-3. Install dependencies:
+
+3. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Run the application:
+
+4. Ensure the following files are present:
+   - `haarcascade_frontalface_default.xml`
+   - A valid SMTP email configuration in `main.py`.
+
+5. Run the application:
    ```bash
    python main.py
    ```
@@ -48,59 +56,56 @@ The **Facial-Recognition_Attendance-System** is a robust application for managin
 ---
 
 ## Usage
-1. **Take Images**: Register a new user by entering an ID and name, then capture their images.
-2. **Train Images**: Train the model with captured images.
-3. **Track Attendance**: Start the face recognition system to mark attendance.
-4. **Admin Options**:
-   - Change password.
-   - Monitor attendance records.
+
+1. **Register Users**: Use the "Take Images" feature to register users by capturing their face data.
+2. **Train Model**: Train the facial recognition model using the "Train Images" feature.
+3. **Track Attendance**: Start real-time face recognition using the "Track Attendance" feature. Attendance is automatically logged.
+4. **Email Reports**: Attendance files are emailed automatically to the configured recipient.
 
 ---
 
-## File Structure
-```
-Facial-Recognition_Attendance-System/
-├── main.py                 # Main application script
-├── requirements.txt        # Project dependencies
-├── TrainingImage/          # Captured images for training
-├── TrainingImageLabel/     # Trained model data
-├── StudentDetails/         # Registered user details (CSV)
-├── Attendance/             # Attendance records (Excel)
-└── README.md               # Project documentation
-```
+## Screenshots
 
----
 
-## Technologies Used
-- **Python**: Core programming language
-- **OpenCV**: For face recognition
-- **Tkinter**: GUI framework
-- **Pandas**: Data manipulation and storage
-- **Pillow**: Image processing
 
 ---
 
 ## Contributing
-Contributions are welcome! Follow these steps:
+
+Contributions are welcome! If you wish to improve the project:
+
 1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature-name`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature-name`).
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add your message here"
+   ```
+4. Push the branch:
+   ```bash
+   git push origin feature-name
+   ```
 5. Open a pull request.
 
 ---
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
 ## Contact
-For any inquiries or assistance, please contact the project owner:
-- **GitHub**: [dev0052](https://github.com/dev0052)
+
+If you encounter issues or have suggestions, feel free to reach out:
 - **Email**: realdev0052@gmail.com
+- **GitHub**: [dev0052](https://github.com/dev0052)
 
 ---
 
+## Acknowledgements
 
-Happy Coding! 🚀
+- [OpenCV](https://opencv.org/) for image processing.
+- The Python community for amazing libraries and support.
