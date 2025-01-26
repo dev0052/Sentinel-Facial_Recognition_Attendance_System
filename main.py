@@ -250,7 +250,7 @@ def track_images():
                     reader = csv.reader(f)
                     next(reader)  # Skip header
                     for row in reader:
-                        if int(row[0]) == id_:
+                        if row and int(row[0]) == id_:  # Check if row is not empty
                             name = row[1]
                             break
 
