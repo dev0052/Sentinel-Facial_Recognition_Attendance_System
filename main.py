@@ -53,9 +53,9 @@ def update_registered_users_label():
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_SENDER = "ubuntuvm22.alerts@gmail.com"  # Sender's email
-EMAIL_PASSWORD = "gqks xfjb bszy tvms"  # App password for the sender's email
-EMAIL_RECEIVER = "dev.sharma2021@vitbhopal.ac.in"  # Receiver's email
+EMAIL_SENDER = "senders mail"  # Sender's email
+EMAIL_PASSWORD = "gmail app password"  # App password for the sender's email
+EMAIL_RECEIVER = "reciever's mail"  # Receiver's email
 
 def send_attendance_email(file_path):
     """
