@@ -1,7 +1,0 @@
-tk
-opencv-contrib-python
-opencv-python
-numpy
-pandas
-pillow
-openpyxl
