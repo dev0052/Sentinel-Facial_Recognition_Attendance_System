@@ -401,7 +401,8 @@ def record_attendance():
                 break
 
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = detector.detectMultiScale(gray, 1.3, 5)
+            faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3)
+            print(f"Detected faces: {faces}")  # Debug: Check detected faces
 
             for (x, y, w, h) in faces:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -437,6 +438,7 @@ def record_attendance():
                     intruder_filename = f"{intruder_dir}/Intruder_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{intruder_count}.jpg"
                     cropped_face = img[y:y + h, x:x + w]
                     success = cv2.imwrite(intruder_filename, cropped_face)
+                    print(f"Image saved successfully: {success} at {intruder_filename}")  # Debug: Image save status
 
                     if success:
                         print(f"Intruder image saved as {intruder_filename}")
