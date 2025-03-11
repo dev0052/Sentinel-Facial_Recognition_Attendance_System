@@ -109,3 +109,8 @@ If you encounter issues or have suggestions, feel free to reach out:
 
 - [OpenCV](https://opencv.org/) for image processing.
 - The Python community for amazing libraries and support.
+
+---
+## Author
+
+- **Dev Sharma** - [GitHub Profile](https://github.com/dev0052)
