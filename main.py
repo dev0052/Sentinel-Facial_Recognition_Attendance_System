@@ -1,3 +1,6 @@
+
+#QT_QPA_PLATFORM=xcb /media/fedup/Dev/github-dev0052/Sentinel-Facial_Recognition_Attendance_System/myenv/bin/python /media/fedup/Dev/github-dev0052/Sentinel-Facial_Recognition_Attendance_System/main.py
+
 import tkinter as tk
 from tkinter import messagebox as mess, simpledialog as tsd
 from tkinter import ttk
