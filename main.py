@@ -1,4 +1,5 @@
-
+# 21BSA10039 | Dev Sharma
+# Face Recognition Attendance System
 #QT_QPA_PLATFORM=xcb /media/fedup/Dev/github-dev0052/Sentinel-Facial_Recognition_Attendance_System/myenv/bin/python /media/fedup/Dev/github-dev0052/Sentinel-Facial_Recognition_Attendance_System/main.py
 
 import tkinter as tk
