@@ -1,0 +1,12 @@
+opencv-python
+opencv-contrib-python
+numpy
+pandas
+pillow
+flask
+imutils
+python-dotenv
+dlib
+face-recognition
+tk
+imutils
