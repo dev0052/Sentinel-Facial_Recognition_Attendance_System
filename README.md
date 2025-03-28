@@ -1,4 +1,4 @@
-# Sentinel Facial Attendance System
+# Sentinel Facial Recognition Attendance System
 
 ## Overview
 The Sentinel Facial Attendance System is an innovative, real-time facial recognition-based attendance management system. It eliminates the need for manual attendance tracking by leveraging computer vision and machine learning techniques to automatically mark attendance. The system is designed to enhance accuracy and efficiency, especially in environments like schools, colleges, and corporate offices.
