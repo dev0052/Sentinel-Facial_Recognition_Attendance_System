@@ -1,4 +1,5 @@
 opencv-python
+openpyxl
 opencv-contrib-python
 numpy
 pandas
